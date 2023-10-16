@@ -1,0 +1,35 @@
+
+POST http://localhost:3000/api/auth/login
+Content-Type: application/json
+
+{
+    "email" : "sumeya@example.com",
+    "password" : "123456"
+}
+
+###
+GET http://localhost:3000/api/users
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibmFtZSI6InN1bWV5YSIsImVtYWlsIjoic3VtZXlhQGV4YW1wbGUuY29tIiwiaWF0IjoxNjk3MTAxNTY3LCJleHAiOjE2OTcxMDE1ODd9.0cg3wYpZ_iRkXw5L1rXZu9_hfEGCmB2UlW-I1Eievxk
+###
+GET http://localhost:3000/api/auth/refresh_token
+Content-Type: application/json
+
+
+###
+DELETE  http://localhost:3000/api/auth/refresh_token
+
+###
+POST  http://localhost:3000/api/users
+Content-Type: application/json
+
+   {
+    "picture": "https://icon-library.com/images/no-profile-picture-icon/no-profile-picture-icon-11.jpg",
+    "first_name": "Sumeya",
+    "last_name": "Mohamed",
+    "email": "sumeya@example.com",
+    "password": "123456",
+    "role": "admin",
+    "department": "IT"
+   }
+###
