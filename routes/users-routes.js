@@ -1,7 +1,21 @@
 import express from 'express';
 import pool from '../db.js';
 import bcrypt from 'bcrypt';
-import { authenticationToken } from '../middleware/authorization.js';
+import { authenticationToken } from '../middleware/authorization.js'
+import multer from 'multer';
+
+//storage config
+const imgconfig = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, '../uploads/users');
+  },
+  filename: (req, file, cb) => {
+    cb(null, file.originalname);
+  }
+});
+
+const upload = multer({storage: imgconfig});
+
 
 const router = express.Router();
 router.get("/", async (req,res) => {
@@ -39,5 +53,28 @@ router.delete('/:id', authenticationToken, async (req, res) => {
       res.status(500).json({ error: error.message });
     }
   });
+
+  router.put('/:id', authenticationToken, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { picture, first_name, last_name, email, role, department } = req.body;
+
+        // Check if the user exists
+        const existingUser = await pool.query('SELECT * FROM users WHERE id = $1', [id]);
+        if (existingUser.rows.length === 0) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // Update the user
+        const updatedUser = await pool.query(
+            'UPDATE users SET picture = $1, first_name = $2, last_name = $3, email = $4, role = $5, department = $6, updated_at = CURRENT_DATE WHERE id = $7 RETURNING *',
+            [picture, first_name, last_name, email, role, department, id]
+        );
+
+        res.json({ user: updatedUser.rows[0] });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
 
 export default router;
